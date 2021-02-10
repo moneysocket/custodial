@@ -1,0 +1,47 @@
+<html>
+<head>
+    <!-- ... -->
+    <meta charset="UTF-8" />
+    <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
+</head>
+
+<body>
+<div class="flex justify-center py-5">
+<div class="flex flex-col bg-green-100 rounded w-3/4 px-10">
+<div class="flex justify-center py-2"> <span class="text-4xl text-center text-green-700 break-words">Custodial Terminus for <a class="text-blue-900" target="_blank" href="https://socket.money">Moneysocket</a></span> </div>
+<div class="flex justify-center py-2"> <span class="text-3xl text-center font-bold text-red-600 break-words">Reckless! Use at your own risk!</span> </div>
+<div class="flex justify-center py-2"> <span class="text-green-800 text-center break-words">This is <b>only</b> intended for play and experiments. Accounts are capped at <b>2000</b> sats. Satoshis not withdrawn will be treated as a <a class="text-blue-900" target="_blank" href="https://socket.money#donate">donation</a> to the project at a time convenient to the project.</span> </div>
+<div class="flex justify-center py-2"> <span class="text-green-800 text-center break-words"> You can run your own Terminus with your C-Lightning or LND node by following <a class="text-blue-900" target="_blank" href="https://github.com/moneysocket/terminus">these instructions</a>.</span> </div>
+</div>
+</div>
+
+<div class="flex justify-center py-5">
+<div class="flex flex-col bg-green-100 rounded w-1/2 px-10">
+
+<div class="flex justify-center py-4"> <span class="text-2xl text-green-700 break-words">Login to account:</span> </div>
+
+<form action="" method = "POST">
+    <div class="py-1"> <p>Email: <input type = "email" name = "email" /></p></div>
+    <div class="py-1"> <p>Password: <input type = "password" name = "password" /></p></div>
+    <div class="py-1"> <p> <input type = "submit" value = "Submit" /></p> </div>
+</form>
+
+<div class="flex justify-center"> <span class="break-words text-green-700">Don't have an account?</span> </div>
+<div class="flex justify-center py-5"> <div class="bg-green-900 text-green-100 rounded px-4"> <a href="{{ url_for('register')}}">Register Here</a> </div> </div>
+
+</div>
+</div>
+
+<div class="flex justify-center py-5">
+<div class="flex flex-row bg-green-100 rounded w-3/4 px-10 py-4">
+
+<div class="flex justify-center px-2"> <div class="bg-green-600 text-green-100 rounded px-4"> <a target="_blank" href="https://github.com/moneysocket/custodial">Portal Source Code</a> </div> </div>
+<div class="flex justify-center px-2"> <div class="bg-green-600 text-green-100 rounded px-4"> <a target="_blank" href="https://socket.money">Project Homepage</a> </div> </div>
+<div class="flex justify-center px-2"> <div class="bg-green-600 text-green-100 rounded px-4"> <a target="_blank" href="https://t.me/moneysocket">Telegram</a> </div> </div>
+<div class="flex justify-center px-2"> <div class="bg-green-600 text-green-100 rounded px-4"> <a target="_blank" href="https://socket.money/#donate">Donate</a> </div> </div>
+
+</div>
+</div>
+
+</body>
+</html>
