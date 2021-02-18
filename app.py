@@ -7,12 +7,19 @@ from flask import Flask, render_template, request, redirect
 from flask_login import login_required, current_user, login_user, logout_user
 from models import UserModel, db, login
 from config import read_config
+from terminus_rpc import TerminusRpc
 
 ###############################################################################
 # read config file
 ###############################################################################
 
 config = read_config()
+
+###############################################################################
+# rpc connection
+###############################################################################
+
+rpc = TerminusRpc(config)
 
 ###############################################################################
 # setup flask and db
@@ -40,15 +47,18 @@ def create_table():
 # app interaction
 ###############################################################################
 
-@app.route('/beacons')
+@app.route('/accounts')
 @login_required
-def beacons():
-    return render_template('beacons.html')
+def accounts():
+    accounts_text = rpc.call(['getaccountinfo'])
+
+    print(accounts_text)
+    return render_template('accounts.html', getinfo_text=accounts_text)
 
 @app.route('/')
 def root():
     if current_user.is_authenticated:
-        return redirect('/beacons')
+        return redirect('/accounts')
     else:
         return redirect('/login')
 
@@ -59,20 +69,20 @@ def root():
 @app.route('/login', methods = ['POST', 'GET'])
 def login():
     if current_user.is_authenticated:
-        return redirect('/beacons')
+        return redirect('/accounts')
     if request.method == 'POST':
         email = request.form['email']
         user = UserModel.query.filter_by(email = email).first()
         if user is not None and user.check_password(request.form['password']):
             login_user(user)
-            return redirect('/beacons')
+            return redirect('/accounts')
     return render_template('login.html')
 
 
 @app.route('/register', methods=['POST', 'GET'])
 def register():
     if current_user.is_authenticated:
-        return redirect('/beacons')
+        return redirect('/accounts')
     if request.method == 'POST':
         email = request.form['email']
         username = request.form['username']
@@ -90,7 +100,7 @@ def register():
 @app.route('/logout')
 def logout():
     logout_user()
-    return redirect('/beacons')
+    return redirect('/accounts')
 
 ###############################################################################
 # run app server
