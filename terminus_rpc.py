@@ -22,4 +22,8 @@ class TerminusRpc():
             "id": 0,
         }
         response = requests.post(self.url, json=payload).json()
-        return response['result']
+        j = response['result']
+        try:
+            return json.loads(j)
+        except:
+            return None

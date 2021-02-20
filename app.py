@@ -5,9 +5,13 @@
 
 from flask import Flask, render_template, request, redirect
 from flask_login import login_required, current_user, login_user, logout_user
+
+from moneysocket.wad.wad import Wad
+
 from models import UserModel, db, login
 from config import read_config
 from terminus_rpc import TerminusRpc
+
 
 ###############################################################################
 # read config file
@@ -47,13 +51,36 @@ def create_table():
 # app interaction
 ###############################################################################
 
-@app.route('/accounts')
+@app.route('/accounts', methods = ['POST', 'GET'])
 @login_required
 def accounts():
-    accounts_text = rpc.call(['getaccountinfo'])
+    if request.method == 'POST':
+        if 'list_receipts' in request.form:
+            action = 'list_receipts'
+        elif 'generate_beacon' in request.form:
+            action = 'generate_beacon'
+        elif 'clear_beacons' in request.form:
+            action = 'clear_beacons'
+        elif 'remove_account' in request.form:
+            action = 'remove_account'
+        else:
+            return render_template("accounts", error="unknown action")
 
-    print(accounts_text)
-    return render_template('accounts.html', getinfo_text=accounts_text)
+
+        account = request.form[action]
+
+        print(request.form)
+        print(dict(request.form))
+        return render_template('receipts.html')
+    else:
+        info = rpc.call(['getaccountinfo'])
+        print(info)
+        accounts = info['accounts']
+        for account in accounts:
+            account['wad'] = str(Wad.from_dict(account['wad']))
+            account['cap'] = str(Wad.from_dict(account['cap']))
+
+        return render_template('accounts.html', accounts=accounts)
 
 @app.route('/')
 def root():
@@ -110,4 +137,4 @@ if __name__ == "__main__":
     # TODO use gunicorn and nginx
     host = config['Server']['Host']
     port = int(config['Server']['Port'])
-    app.run(host=host, port=port)
+    app.run(host=host, port=port, debug=True)
