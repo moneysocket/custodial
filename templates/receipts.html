@@ -7,10 +7,40 @@
 <body>
 
 <div class="flex justify-center py-5">
-<div class="flex flex-col bg-green-100 rounded w-3/4 px-10">
+<div class="flex flex-col bg-green-100 rounded w-full px-10">
 
-<div class="flex justify-center py-5"> <span class="text-2xl break-words">Receipts: </span> </div>
-<div class="flex justify-center py-5"> <span>Hi </span> <span class="font-bold px-4"> {{ current_user.username }}</span></span></div>
+<div class="flex justify-start py-2">
+<div class="flex justify-center py-5 px-4"> <span class="font-bold px-4"> {{ account_name }}</span></span></div>
+<div class="flex justify-center py-5 px-4"> <span class="break-words">Receipts for {{ n_receipts }} sessions: </span> </div>
+<div class="flex justify-center py-5 px-4"> <div class="bg-green-600 text-green-100 rounded px-2"> <a href="{{ url_for('accounts')}}">Back</a> </div> </div>
+</div>
+
+{% for session in receipts: %}
+<div class="flex justify-center py-5">
+<div class="flex flex-col bg-green-200 rounded w-5/6 px-2">
+
+
+{% for entry in session['entries']: %}
+
+<div class="flex justify-center py-1">
+<div class="flex flex-col bg-green-300 rounded w-5/6 px-2">
+
+<div class="flex justify-around py-2"> <span class="w-1/6 font-bold"> {{ entry['type'] }} </span> <span class="w-5/6 font-bold break-words"> {{ entry['time'] }} </span></div>
+
+{% for value in entry['values']: %}
+
+<div class="flex justify-around py-2"> <span class="w-1/6"> {{ value[0] }}: </span> <span class="w-5/6 font-bold break-words"> {{ value[1] }} </span></div>
+{% endfor %}
+
+</div>
+</div>
+
+{% endfor %}
+
+</div>
+</div>
+
+{% endfor %}
 
 </div>
 </div>
