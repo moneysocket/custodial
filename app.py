@@ -132,11 +132,12 @@ def render_receipts(account):
     return render_template('receipts.html', account_name=account,
                            receipts=receipts, n_receipts=len(receipts))
 
-def render_login():
-    return render_template('login.html', account_cap=config['Account']['Cap'])
+def render_login(error=None):
+    return render_template('login.html', error=error,
+                           account_cap=config['Account']['Cap'])
 
-def render_register():
-    render_template('register.html')
+def render_register(error=None):
+    return render_template('register.html', error=error)
 
 ###############################################################################
 # app actions
@@ -250,6 +251,7 @@ def login():
         if user is not None and user.check_password(request.form['password']):
             login_user(user)
             return redirect('/accounts')
+        return render_login(error="invalid username/pw")
     return render_login()
 
 
@@ -258,11 +260,19 @@ def register():
     if current_user.is_authenticated:
         return redirect('/accounts')
     if request.method == 'POST':
+        if "email" not in request.form:
+            return render_register(error='no email?')
+        if "username" not in request.form:
+            return render_register(error='no username?')
+        if "password" not in request.form:
+            return render_register(error='no password?')
         email = request.form['email']
         username = request.form['username']
         password = request.form['password']
         if UserModel.query.filter_by(email=email).first():
-            return ('Email already present')
+            return render_register(error='Email already present')
+        if UserModel.query.filter_by(username=username).first():
+            return render_register(error='Username already present')
         user = UserModel(email=email, username=username)
         user.set_password(password)
         db.session.add(user)

@@ -6,6 +6,18 @@
 </head>
 
 <body>
+
+{% if error: %}
+<div class="flex justify-center py-1">
+<div class="flex flex-col bg-red-100 rounded w-3/4 px-10">
+
+<div class="flex justify-center py-5"> <span>Whoops: {{ error }} </span> </div>
+
+</div>
+</div>
+
+{% endif %}
+
 <div class="flex justify-center py-5">
 <div class="flex flex-col bg-green-100 rounded w-3/4 px-10">
 <div class="flex justify-center py-2"> <span class="text-4xl text-center text-green-700 break-words">Custodial Terminus for <a class="text-blue-900" target="_blank" href="https://socket.money">Moneysocket</a></span> </div>
