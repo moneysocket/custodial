@@ -13,7 +13,7 @@ from moneysocket.wad.wad import Wad
 from moneysocket.beacon.beacon import MoneysocketBeacon
 from moneysocket.beacon.location.websocket import WebsocketLocation
 
-from models import UserModel, db, login
+from models import UserModel, AccountAssignment, db, login
 from config import read_config
 from terminus_rpc import TerminusRpc
 
@@ -53,12 +53,20 @@ def create_table():
     db.create_all()
 
 ###############################################################################
+# database helpers
+###############################################################################
+
+def user_accounts():
+    return [aa.account_name for aa in current_user.account_assignments]
+
+###############################################################################
 # app rpcs
 ###############################################################################
 
 def getaccountinfo_rpc():
     try:
-        info = rpc.call(['getaccountinfo'])
+        ua = user_accounts()
+        info = rpc.call(['getaccountinfo'] + ua)
         accounts = info['accounts']
         for account in accounts:
             account['wad'] = str(Wad.from_dict(account['wad']))
@@ -188,16 +196,27 @@ def remove_account(account):
     info = clear_rpc(account)
     if not info['success']:
         return render_accounts(error=info['error'])
-    info = rm_rpc(account   )
-
+    info = rm_rpc(account)
     if not info['success']:
         return render_accounts(error=info['error'])
+    aa = AccountAssignment.query.filter_by(account_name=account).first()
+    db.session.delete(aa)
+    db.session.commit()
     return render_accounts()
 
 def new_account(username):
+    ua = user_accounts()
+    limit = int(config['Account']['AccountsPerUser'])
+    if len(ua) >= limit:
+        return render_accounts(error="max %d accounts per user" % limit)
     info = create_rpc(username)
     if not info['success']:
         return render_accounts(error=info['error'])
+    account_name = info['name']
+    u = UserModel.query.filter_by(username=username).first()
+    aa = AccountAssignment(user_id=u.id, account_name=account_name)
+    db.session.add(aa)
+    db.session.commit()
     return render_accounts()
 
 ###############################################################################
