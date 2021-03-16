@@ -288,6 +288,8 @@ def register():
         email = request.form['email']
         username = request.form['username']
         password = request.form['password']
+        if len(password) < 8:
+            return render_register(error='password must be 8 chars long')
         if UserModel.query.filter_by(email=email).first():
             return render_register(error='Email already present')
         if UserModel.query.filter_by(username=username).first():
