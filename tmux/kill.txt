@@ -1,0 +1,6 @@
+
+
+enter cmd mode
+    `ctrl-b :`
+
+    `:kill-session`

@@ -1,0 +1,2 @@
+#!/bin/bash
+tmux new-session -s moneysocket -n c-lightning \; split-window -h \; new-window -n relay \; split-window -h \; split-window -h \; split-window -h \; new-window -n custodial \; split-window -h \; split-window -h \; split-window -h \; new-window -n scratch1 \; split-window -h \; split-window -h \; new-window -n scratch2 \; split-window -h \; split-window -h \; set -g mouse on \; set -g mouse-select-pane on
