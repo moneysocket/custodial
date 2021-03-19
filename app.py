@@ -224,6 +224,13 @@ def new_account(username):
     return render_accounts()
 
 ###############################################################################
+# redirect
+###############################################################################
+
+def redirect_path(path):
+    return redirect(config['Server']['ExternalBaseUrl'] + path)
+
+###############################################################################
 # app interaction
 ###############################################################################
 
@@ -266,9 +273,9 @@ def root():
     logging.info("root: %s" % request.method)
     if current_user.is_authenticated:
         logging.info("current_user: %s" % current_user)
-        return redirect('/accounts')
+        return redirect_path('/accounts')
     else:
-        return redirect('/login')
+        return redirect_path('/login')
 
 ###############################################################################
 # login lifecycle
@@ -279,13 +286,13 @@ def login():
     logging.info("login: %s" % request.method)
     if current_user.is_authenticated:
         logging.info("current_user: %s" % current_user)
-        return redirect('/accounts')
+        return redirect_path('/accounts')
     if request.method == 'POST':
         email = request.form['email']
         user = UserModel.query.filter_by(email = email).first()
         if user is not None and user.check_password(request.form['password']):
             login_user(user)
-            return redirect('/accounts')
+            return redirect_path('/accounts')
         return render_login(error="invalid username/pw")
     return render_login()
 
@@ -295,7 +302,7 @@ def register():
     logging.info("register: %s" % request.method)
     if current_user.is_authenticated:
         logging.info("current_user: %s" % current_user)
-        return redirect('/accounts')
+        return redirect_path('/accounts')
     if request.method == 'POST':
         if "email" not in request.form:
             return render_register(error='no email?')
@@ -316,7 +323,7 @@ def register():
         user.set_password(password)
         db.session.add(user)
         db.session.commit()
-        return redirect('/login')
+        return redirect_path('/login')
     return render_register()
 
 
@@ -324,7 +331,7 @@ def register():
 def logout():
     logging.info("logout: %s" % request.method)
     logout_user()
-    return redirect('/accounts')
+    return redirect_path('/accounts')
 
 ###############################################################################
 # load gunicorn stuff
