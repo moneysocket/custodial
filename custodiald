@@ -25,7 +25,7 @@ if __name__ == '__main__':
     cert_dir = config['Server']['CertDir']
     ca_certs = os.path.join(cert_dir, "fullchain.pem")
     certfile = os.path.join(cert_dir, "cert.pem")
-    keyfile = os.path.join(cert_dir, "cert.key")
+    keyfile = os.path.join(cert_dir, "privkey.pem")
 
     options = {'threads':   1,
                'bind':      "%s:%s" % (config['Server']['BindHost'],
