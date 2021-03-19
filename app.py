@@ -8,7 +8,7 @@ import traceback
 import logging
 
 from flask import Flask, render_template, request, redirect
-from flask_login import login_required, current_user, login_user, logout_user
+from flask_login import current_user, login_user, logout_user
 
 from gunicorn.app.base import BaseApplication
 
@@ -235,8 +235,10 @@ def redirect_path(path):
 ###############################################################################
 
 @app.route('/accounts', methods = ['POST', 'GET'])
-@login_required
 def accounts():
+    if not current_user.is_authenticated:
+        logging.info("not logged in, redirecting")
+        return redirect_path('/login')
     logging.info("accounts: %s" % request.method)
     if request.method == 'POST':
         if 'list_receipts' in request.form:
