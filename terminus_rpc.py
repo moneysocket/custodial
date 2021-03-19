@@ -4,6 +4,7 @@
 
 import requests
 import json
+import logging
 
 
 class TerminusRpc():
@@ -13,6 +14,7 @@ class TerminusRpc():
         self.url = "http://%s:%d" % (self.host, self.port)
 
     def call(self, args):
+        logging.info("call rpc: %s" % args)
         cmd = args[0]
         cmd_args = args[1:]
         payload = {

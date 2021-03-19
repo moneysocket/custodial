@@ -5,9 +5,13 @@
 
 import time
 import traceback
+import logging
 
 from flask import Flask, render_template, request, redirect
 from flask_login import login_required, current_user, login_user, logout_user
+
+from gunicorn.app.base import BaseApplication
+
 
 from moneysocket.wad.wad import Wad
 from moneysocket.beacon.beacon import MoneysocketBeacon
@@ -49,7 +53,7 @@ db.init_app(app)
 
 @app.before_first_request
 def create_table():
-    print("create table")
+    logging.info("create table")
     db.create_all()
 
 ###############################################################################
@@ -72,8 +76,8 @@ def getaccountinfo_rpc():
             account['wad'] = str(Wad.from_dict(account['wad']))
             account['cap'] = str(Wad.from_dict(account['cap']))
     except Exception as e:
-        print(traceback.format_exc())
-        print(e)
+        logging.error(traceback.format_exc())
+        logging.error(e)
         return {'success': False, 'error': "RPC exception"}
     return accounts
 
@@ -81,8 +85,8 @@ def getaccountreceipts_rpc(account):
     try:
         info = rpc.call(['getaccountreceipts', account])
     except Exception as e:
-        print(traceback.format_exc())
-        print(e)
+        logging.error(traceback.format_exc())
+        logging.error(e)
         return {'success': False, 'error': "RPC exception"}
     return info
 
@@ -90,8 +94,8 @@ def connect_rpc(account, beacon):
     try:
         info = rpc.call(['connect', account, beacon])
     except Exception as e:
-        print(traceback.format_exc())
-        print(e)
+        logging.error(traceback.format_exc())
+        logging.error(e)
         return {'success': False, 'error': "RPC exception"}
     return info
 
@@ -99,8 +103,8 @@ def clear_rpc(account):
     try:
         info = rpc.call(['clear', account])
     except Exception as e:
-        print(traceback.format_exc())
-        print(e)
+        logging.error(traceback.format_exc())
+        logging.error(e)
         return {'success': False, 'error': "RPC exception"}
     return info
 
@@ -108,8 +112,8 @@ def rm_rpc(account):
     try:
         info = rpc.call(['rm', account])
     except Exception as e:
-        print(traceback.format_exc())
-        print(e)
+        logging.error(traceback.format_exc())
+        logging.error(e)
         return {'success': False, 'error': "RPC exception"}
     return info
 
@@ -119,8 +123,8 @@ def create_rpc(username):
     try:
         info = rpc.call(['create', '-a', username, '-c', cap, start])
     except Exception as e:
-        print(traceback.format_exc())
-        print(e)
+        logging.error(traceback.format_exc())
+        logging.error(e)
         return {'success': False, 'error': "RPC exception"}
     return info
 
@@ -226,32 +230,42 @@ def new_account(username):
 @app.route('/accounts', methods = ['POST', 'GET'])
 @login_required
 def accounts():
+    logging.info("accounts: %s" % request.method)
     if request.method == 'POST':
         if 'list_receipts' in request.form:
             action = 'list_receipts'
+            logging.info(action)
             return list_receipts(request.form[action])
         elif 'generate_beacon' in request.form:
             action = 'generate_beacon'
+            logging.info(action)
             return generate_beacon(request.form[action])
         elif 'clear_beacons' in request.form:
             action = 'clear_beacons'
+            logging.info(action)
             return clear_beacons(request.form[action])
         elif 'remove_account' in request.form:
             action = 'remove_account'
+            logging.info(action)
             return remove_account(request.form[action])
         elif 'new_account' in request.form:
             # TODO cap max accounts per user
             action = 'new_account'
+            logging.info(action)
             return new_account(request.form[action])
         else:
+            logging.info("unknown")
             return render_accounts(error="unknown action")
     else:
+        logging.info("render accounts")
         # TODO filter by db ownership
         return render_accounts()
 
 @app.route('/')
 def root():
+    logging.info("root: %s" % request.method)
     if current_user.is_authenticated:
+        logging.info("current_user: %s" % current_user)
         return redirect('/accounts')
     else:
         return redirect('/login')
@@ -262,7 +276,9 @@ def root():
 
 @app.route('/login', methods = ['POST', 'GET'])
 def login():
+    logging.info("login: %s" % request.method)
     if current_user.is_authenticated:
+        logging.info("current_user: %s" % current_user)
         return redirect('/accounts')
     if request.method == 'POST':
         email = request.form['email']
@@ -276,7 +292,9 @@ def login():
 
 @app.route('/register', methods=['POST', 'GET'])
 def register():
+    logging.info("register: %s" % request.method)
     if current_user.is_authenticated:
+        logging.info("current_user: %s" % current_user)
         return redirect('/accounts')
     if request.method == 'POST':
         if "email" not in request.form:
@@ -304,15 +322,29 @@ def register():
 
 @app.route('/logout')
 def logout():
+    logging.info("logout: %s" % request.method)
     logout_user()
     return redirect('/accounts')
 
 ###############################################################################
-# run app server
+# load gunicorn stuff
 ###############################################################################
 
-if __name__ == "__main__":
-    # TODO use gunicorn and nginx
-    host = config['Server']['Host']
-    port = int(config['Server']['Port'])
-    app.run(host=host, port=port, debug=True)
+
+class CustodialApplication(BaseApplication):
+    def __init__(self, options):
+        self.options = options
+        self.application = app
+        super().__init__()
+
+    def load_config(self):
+        config = {key: value for key, value in self.options.items()
+                  if key in self.cfg.settings and value is not None}
+        for key, value in config.items():
+            self.cfg.set(key.lower(), value)
+
+    def load(self):
+        return self.application
+
+    def init(self, parser, opts, args):
+        pass
