@@ -1,0 +1,40 @@
+#!/usr/bin/env python3
+# Copyright (c) 2019 PrimeVR
+# All rights Reserved
+
+import os
+import datetime
+import argparse
+
+from config import read_config
+
+from log_setup import setup_logging
+
+
+from app import CustodialApplication
+
+config = read_config()
+
+if __name__ == '__main__':
+
+    now = datetime.datetime.now().strftime("%y%m%d-%H.%M.%S")
+    logfile = os.path.join(config['Server']['LogDir'],
+                           "custodiald-%s.log" % now)
+    setup_logging(logfile, "custodiald")
+
+    cert_dir = config['Server']['CertDir']
+    ca_certs = os.path.join(cert_dir, "fullchain.pem")
+    certfile = os.path.join(cert_dir, "cert.pem")
+    keyfile = os.path.join(cert_dir, "cert.key")
+
+    options = {'threads':   1,
+               'bind':      "%s:%s" % (config['Server']['BindHost'],
+                                       config['Server']['BindPort']),
+               'loglevel':  'debug',
+               'ca_certs':  ca_certs,
+               'certfile':  certfile,
+               'keyfile':   keyfile,
+               'proc_name': "custodiald",
+              }
+    print(options)
+    CustodialApplication(options).run()
