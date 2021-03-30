@@ -1,0 +1,72 @@
+*,
+*::after,
+*::before {
+    margin: 0;
+    padding: 0;
+    box-sizing: inherit;
+}
+
+html {
+    font-family: 'Roboto';
+}
+
+body {
+    font-weight: 400;
+    box-sizing: border-box;
+}
+
+.account-div {
+    border-radius: 25px;
+    min-height: 500px;
+    background-color: green;
+    background-image: linear-gradient(to right top, #4da56e, #8DC095);
+    box-shadow: rgb(0 0 0 / 3%) 0px 0px 1px, rgb(0 0 0 / 6%) 0px 5px 10px, rgb(0 0 0 / 12%) 0px 20px 36px;
+}
+
+.info-titles {
+    text-transform: uppercase;
+}
+
+.btn-cont {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.btn-inner {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+
+.input-boxes {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.btn-main {
+    background-color: #159245;
+    border-radius: 20px;
+    padding: 15px;
+    font-weight: 600;
+    text-align: center;
+    color: white;
+    box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
+}
+
+.btn-wide {
+    min-width: 7em;
+}
+
+.btn-main:hover {
+    background-color: #0a5527;
+}
+
+.btn-red {
+    background-color: red;
+}
+
+.btn-red:hover {
+    background-color: rgb(180, 34, 34);
+}

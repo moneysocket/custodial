@@ -3,6 +3,7 @@
     <!-- ... -->
     <meta charset="UTF-8" />
     <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/styles.css') }}">
 </head>
 <body>
 
@@ -28,25 +29,29 @@
 {% for account in accounts: %}
 
 <div class="flex justify-center py-5">
-<div class="flex flex-col bg-green-200 rounded w-3/4 px-2">
+<div class="flex flex-col rounded w-3/4 p-4 account-div">
 
-<div class="flex justify-around py-2"> <span class="w-1/4"> Account: </span> <span class="font-bold w-3/4"> {{ account['name'] }} </span></div>
-<div class="flex justify-around py-2"> <span class="w-1/4"> Balance: </span> <span class="font-bold w-3/4"> {{ account['wad'] }} </span></div>
-<div class="flex justify-around py-2"> <span class="w-1/4"> Cap: </span> <span class="font-bold w-3/4"> {{ account['cap'] }} </span></div>
+<div class="flex justify-around py-2"> <span class="w-1/4 info-titles"> Account: </span> <span class="font-bold w-3/4"> {{ account['name'] }} </span></div>
+<div class="flex justify-around py-2"> <span class="w-1/4 info-titles"> Balance: </span> <span class="font-bold w-3/4"> {{ account['wad'] }} </span></div>
+<div class="flex justify-around py-2"> <span class="w-1/4 info-titles"> Cap: </span> <span class="font-bold w-3/4"> {{ account['cap'] }} </span></div>
 
 {% for beacon in account['outgoing_beacons']: %}
 
-<div class="flex justify-around py-2"> <span class="w-1/4"> Outgoing Beacon: </span> <span class="w-3/4 font-bold break-words"> {{ beacon }} </span></div>
+<div class="flex justify-around py-2"> <span class="w-1/4 info-titles"> Outgoing Beacon: </span> <span class="w-3/4 font-bold break-words"> {{ beacon }} </span></div>
 
 {% endfor %}
 
-<div class="flex justify-around py-2">
+<div class="btn-cont">
 
-<div class="flex justify-center py-2"> <form action="" method="POST"><button type="submit" name="list_receipts" value="{{ account['name'] }}" class="bg-green-600 hover:bg-green-500 text-green-100 rounded px-1">List Receipts</button></form> </div>
-<div class="flex justify-center py-2"> <form action="" method="POST"><button type="submit" name="generate_beacon" value="{{ account['name'] }}" class="bg-green-600 hover:bg-green-500 text-green-100 rounded px-1">Generate Beacon</button></form> </div>
-<div class="flex justify-center py-2"> <form action="" method="POST"><button type="submit" name="clear_beacons" value="{{ account['name'] }}" class="bg-green-600 hover:bg-green-500 text-green-100 rounded px-1">Clear Beacons</button></form> </div>
-<div class="flex justify-center py-2"> <form action="" method="POST"><button type="submit" name="remove_account" value="{{ account['name'] }}" class="bg-green-600 hover:bg-green-500 text-green-100 rounded px-1">Remove Account</button></form> </div>
+<div class="flex py-2 btn-inner">
 
+<div class="flex justify-center py-2"> <form action="" method="POST"><button type="submit" name="list_receipts" value="{{ account['name'] }}" class="btn-main">List Receipts</button></form> </div>
+<div class="flex justify-center py-2"> <form action="" method="POST"><button type="submit" name="generate_beacon" value="{{ account['name'] }}" class="btn-main">Generate Beacon</button></form> </div>
+<div class="flex justify-center py-2"> <form action="" method="POST"><button type="submit" name="clear_beacons" value="{{ account['name'] }}" class="btn-main">Clear Beacons</button></form> </div>
+</div>
+<div class="flex py-2 btn-inner">
+<div class="flex justify-center py-2"> <form action="" method="POST"><button type="submit" name="remove_account" value="{{ account['name'] }}" class="btn-main btn-red">Remove Account</button></form> </div>
+</div>
 </div>
 
 </div>
@@ -55,9 +60,10 @@
 
 {% endfor %}
 
-<div class="flex justify-center py-2"> <form action="" method="POST"><button type="submit" name="new_account" value="{{ current_user.username }}" class="bg-green-600 hover:bg-green-500 text-green-100 rounded px-1">New Account</button></form> </div>
-<div class="flex justify-center py-5"> <div class="bg-green-600 text-green-100 rounded px-4"> <a href="{{ url_for('logout')}}">Logout Here</a> </div> </div>
-
+<div class="btn-inner">
+<div class="flex justify-center py-2"> <form action="" method="POST"><button type="submit" name="new_account" value="{{ current_user.username }}" class="btn-main">New Account</button></form> </div>
+<div class="flex justify-center py-6"> <div> <a href="{{ url_for('logout')}}" class="underline">Logout Here</a> </div> </div>
+</div>
 </div>
 </div>
 
