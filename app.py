@@ -34,6 +34,7 @@ config = read_config()
 
 rpc = TerminusRpc(config)
 
+
 ###############################################################################
 # setup flask and db
 ###############################################################################
@@ -46,6 +47,9 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 login.init_app(app)
 login.login_view = 'login'
 db.init_app(app)
+
+
+app.static_folder ='static'
 
 ###############################################################################
 # database initialization

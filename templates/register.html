@@ -3,6 +3,7 @@
     <!-- ... -->
     <meta charset="UTF-8" />
     <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/styles.css') }}">
 </head>
 
 <body>
@@ -25,16 +26,22 @@
 <div class="flex justify-center py-4"> <span class="text-2xl text-green-700 break-words">Register for an account:</span> </div>
 
 <form action="" method = "POST">
-    <div class="py-1"> <p>Email: <input type = "email" name = "email" /></p> </div>
-    <div class="py-1"> <p>Username: <input type = "text" name = "username" /></p> </div>
-    <div class="py-1"> <p>Password: <input type = "password" name = "password" /></p> </div>
-    <div class="py-1"> <p> <button type="submit" value="Submit" class="bg-green-600 hover:bg-green-500 text-green-100 rounded px-1">Submit</button></p> </div>
+    <div class="input-boxes">
+    <div class="py-1"> <p>Email:</p></div> <div><p><input type = "email" name = "email" /></p> </div>
+    </div>
+    <div class="input-boxes">
+    <div class="py-1"> <p>Username:</p></div> <div><p><input type = "text" name = "username" /></p> </div>
+    </div>
+    <div class="input-boxes">
+    <div class="py-1"> <p>Password:</p></div> <div><p><input type = "password" name = "password" /></p> </div>
+    </div>
+    <div class="flex py-1 justify-end"> <p> <button type="submit" value="Submit" class="btn-main btn-wide">Submit</button></p> </div>
 
 </form>
 
 
-<div class="flex justify-center"> <span class="break-words text-green-700">Already have an account?</span> </div>
-<div class="flex justify-center py-5"> <div class="bg-green-900 text-green-100 rounded px-4"> <a href="{{ url_for('login')}}">Login Here</a> </div> </div>
+<div class="flex justify-center pt-5"> <span class="break-words text-green-700">Already have an account?</span> </div>
+<div class="flex justify-center py-5"> <div class="underline"> <a href="{{ url_for('login')}}">Login Here</a> </div> </div>
 
 </div>
 </div>
