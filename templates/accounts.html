@@ -4,6 +4,21 @@
     <meta charset="UTF-8" />
     <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/styles.css') }}">
+
+<script type="text/javascript" src="{{ url_for('static',filename='qrcode.min.js') }}"></script>
+<script>
+function renderQr(beacon) {
+    console.log("rendering " + beacon);
+
+    var e = document.getElementById(beacon);
+    e.innerHTML = "";
+    var b = beacon.toUpperCase();
+    var q = new QRCode(e, {text: b, width: 300, height:300});
+    e.setAttribute('class', "border-8 border-white")
+}
+</script>
+
+
 </head>
 <body>
 
@@ -37,7 +52,7 @@
 
 {% for beacon in account['outgoing_beacons']: %}
 
-<div class="flex justify-around py-2"> <span class="w-1/4 info-titles"> Outgoing Beacon: </span> <span class="w-3/4 font-bold break-words"> {{ beacon }} </span></div>
+<div class="flex justify-around py-2"> <span class="w-1/5 info-titles"> Outgoing Beacon: </span> <span class="w-3/5 font-bold break-words"> {{ beacon }} </span> <div class="w-1/5 pl-4" id="{{ beacon }}"> <div onclick="renderQr('{{ beacon }}')" class="hover:bg-green-400 border border-black rounded"><div class="font-bold text-2xl px-2 text-center"> QR Code</div> </div></div></div>
 
 {% endfor %}
 
